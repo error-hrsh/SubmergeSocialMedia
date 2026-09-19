@@ -4,10 +4,18 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 const registerUser = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "OK",
-  });
-  // const { fullName, email, username, password } = req.body;
+  const { fullName, email, username, password } = req.body;
+
+  // console.log("Request body:", {
+  //   fullName,
+  //   email,
+  //   username,
+  //   password: "DOnt need to see this bro",
+  // });
+  ////
+
+  //To  CHECK WHAT IS THERE IN THE RESPONSE.BODY
+
   // console.log(`FullName:-${fullName}\n Password:-${password}`);
 
   if (
@@ -16,7 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -25,7 +33,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const avtarLocalPath = req.files?.avtar[0]?.path;
-  const coverImagelocalPath = req.files?.coverImage[0]?.path;
+  const coverImagelocalPath = req.files?.coverImage?.[0]?.path;
+  // let coverImageLocalPath;
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.coverImage) &&
+  //   req.files.coverImage.length > 0
+  // ) {
+  //   coverImageLocalPath = req.files.coverImage[0].path;
+  // }
+
   if (!avtarLocalPath) {
     throw new ApiError(400, "Avtar file is required");
   }
