@@ -60,11 +60,11 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 userSchema.methods.isPasswordCorrect = async function (pass) {
-  return await bcrypt.compare(this.password, pass); // retrurn true/false with return
+  return await bcrypt.compare(pass, this.password); // retrurn true/false with return
 };
 
 userSchema.methods.generateAccessToken = function () {
